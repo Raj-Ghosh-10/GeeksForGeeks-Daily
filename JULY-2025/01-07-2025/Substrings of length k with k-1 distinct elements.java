@@ -1,3 +1,6 @@
+import java.util.HashMap;
+import java.util.Map;
+
 class Solution {
     public int substrCount(String s, int k) {
         Map<Character, Integer> map = new HashMap<>();
