@@ -4,7 +4,7 @@ import java.util.Map;
 class Solution {
     public int countAtMostK(int arr[], int k) {
         Map<Integer,Integer> map=new HashMap<>();
-        int right=0,left=0,i=0;
+        int right=0,left=0;
         int result=-1;
         int n=arr.length;
         while(right<n){
