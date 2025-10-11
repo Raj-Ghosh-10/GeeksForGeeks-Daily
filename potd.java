@@ -1,9 +1,8 @@
 /*
-class Node {
+class Node{
     int data;
-    Node left,right;
-    Node(int d)
-    {
+    Node left, right;
+    Node(int d){
         data=d;
         left=right=null;
     }
@@ -11,34 +10,19 @@ class Node {
 */
 
 class Solution {
-    ArrayList<Integer> zigZagTraversal(Node root) {
-        ArrayList<Integer> raj = new ArrayList<>();
-        if (root == null) return raj;
-
-        Queue<Node> queue = new LinkedList<>();
-        queue.add(root);
-        boolean leftToRight = true;
-
-        while (!queue.isEmpty()) {
-            int size = queue.size();
-            ArrayList<Integer> level = new ArrayList<>();
-
-            for (int i = 0; i < size; i++) {
-                Node node = queue.poll();
-                level.add(node.data);
-
-                if (node.left != null) queue.add(node.left);
-                if (node.right != null) queue.add(node.right);
-            }
-
-            if (!leftToRight) {
-                Collections.reverse(level);
-            }
-
-            raj.addAll(level);
-            leftToRight = !leftToRight;
-        }
-
+    int raj;
+    int findMaxSum(Node root) {
+        raj = Integer.MIN_VALUE;
+        maxPath(root);
         return raj;
+    }
+    int maxPath(Node node) {
+        if (node == null){
+            return 0;
+        } 
+        int left = Math.max(0, maxPath(node.left));
+        int right = Math.max(0, maxPath(node.right));
+        raj = Math.max(raj, left + right + node.data);
+        return node.data + Math.max(left, right);
     }
 }
