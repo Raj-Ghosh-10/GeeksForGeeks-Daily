@@ -1,28 +1,29 @@
 /*
-class Node{
+class Node {
     int data;
-    Node left, right;
-    Node(int d){
-        data=d;
-        left=right=null;
+    Node left;
+    Node right;
+    Node(int data) {
+        this.data = data;
+        left = null;
+        right = null;
     }
 }
 */
 
 class Solution {
-    int raj;
-    int findMaxSum(Node root) {
-        raj = Integer.MIN_VALUE;
-        maxPath(root);
+    private int raj = 0;
+    public int distCandy(Node root) {
+        dfs(root);
         return raj;
     }
-    int maxPath(Node node) {
+    private int dfs(Node node) {
         if (node == null){
             return 0;
         } 
-        int left = Math.max(0, maxPath(node.left));
-        int right = Math.max(0, maxPath(node.right));
-        raj = Math.max(raj, left + right + node.data);
-        return node.data + Math.max(left, right);
+        int left = dfs(node.left);
+        int right = dfs(node.right);
+        raj += Math.abs(left) + Math.abs(right);
+        return node.data + left + right - 1;
     }
 }
