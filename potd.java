@@ -1,29 +1,26 @@
 /*
 class Node {
     int data;
-    Node left;
-    Node right;
+    Node left, right;
+
     Node(int data) {
         this.data = data;
-        left = null;
-        right = null;
+        this.left = null;
+        this.right = null;
     }
 }
 */
-
-class Solution {
-    private int raj = 0;
-    public int distCandy(Node root) {
-        dfs(root);
-        return raj;
+class Solution{
+    private int[] solve(Node root){
+        if (root == null) return new int[]{0, 0};
+        int[] left = solve(root.left);
+        int[] right = solve(root.right);
+        int include = root.data + left[1] + right[1];
+        int exclude = Math.max(left[0], left[1]) + Math.max(right[0], right[1]);
+        return new int[]{include, exclude};
     }
-    private int dfs(Node node) {
-        if (node == null){
-            return 0;
-        } 
-        int left = dfs(node.left);
-        int right = dfs(node.right);
-        raj += Math.abs(left) + Math.abs(right);
-        return node.data + left + right - 1;
+    public int getMaxSum(Node root){
+        int[] raj = solve(root);
+        return Math.max(raj[0], raj[1]);
     }
 }
