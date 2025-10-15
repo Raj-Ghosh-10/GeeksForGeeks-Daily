@@ -1,37 +1,33 @@
-/*
-class Node {
-    int data;
-    Node left, right;
+'''
+class Node:
+    def __init__(self, val):
+        self.data = val
+        self.left = None
+        self.right = None
+'''
 
-    public Node(int d)
-    {
-        data = d;
-        left = right = null;
-    }
-}
-*/
-
-class Solution {
-    int ans=-1;
-    int kk;
-    public int kthSmallest(Node root, int k) {
-        kk=k;
-        kth(root);
-        return ans;
-    }
-    public void kth(Node root) {
-        if(root.left==null && root.right==null){
-            kk--;
-            
-            if(kk==0){
-                ans=root.data;
-            }
-            return;
-        }
-        if(root.left!=null) kth(root.left);
-        kk--;
-        if(kk==0) ans=root.data;
-        if(root.right!=null) kth(root.right);
+class Solution:
+    def __init__(self):
+        self.ans = -1
+        self.k = None
         
-    }
-}
+    def InOrderTraversal(self, root):
+        if root == None:
+            return
+        
+        self.InOrderTraversal(root.left)
+        self.k -= 1
+        if self.k == 0:
+            self.ans = root.data
+            raise Exception()
+            
+        self.InOrderTraversal(root.right)
+        
+    def kthSmallest(self, root, k):
+        self.k = k
+        try:
+            self.InOrderTraversal(root)
+        except Exception:
+            pass
+        return self.ans
+        
