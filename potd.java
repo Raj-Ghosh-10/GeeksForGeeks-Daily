@@ -1,37 +1,27 @@
 /*
 class Node {
     int data;
-    Node left, right;
-
-    public Node(int d)
-    {
-        data = d;
-        left = right = null;
+    Node left;
+    Node right;
+    Node(int data){
+        this.data = data;
+        left=null;
+        right=null;
     }
 }
 */
 
 class Solution {
-    int ans=-1;
-    int kk;
-    public int kthSmallest(Node root, int k) {
-        kk=k;
-        kth(root);
-        return ans;
-    }
-    public void kth(Node root) {
-        if(root.left==null && root.right==null){
-            kk--;
-            
-            if(kk==0){
-                ans=root.data;
-            }
-            return;
+    Node removekeys(Node root, int l, int r) {
+        if (root == null) return null;
+        if (root.data < l) {
+            return removekeys(root.right, l, r);
         }
-        if(root.left!=null) kth(root.left);
-        kk--;
-        if(kk==0) ans=root.data;
-        if(root.right!=null) kth(root.right);
-        
+        if (root.data > r) {
+            return removekeys(root.left, l, r);
+        }
+        root.left = removekeys(root.left, l, r);
+        root.right = removekeys(root.right, l, r);
+        return root;
     }
 }
