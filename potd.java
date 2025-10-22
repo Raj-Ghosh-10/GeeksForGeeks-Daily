@@ -1,24 +1,23 @@
 class Solution {
-    public ArrayList<Integer> topKFreq(int[] arr, int k) {
-        // Code here
-        Map<Integer,Integer> map = new HashMap<>();
-        for(int val:arr){
-            map.put(val,map.getOrDefault(val,0)+1);
+    public void nearlySorted(int[] arr, int k) {
+        // code here
+         PriorityQueue<Integer> pq = new PriorityQueue<>(); // min heap
+        
+        for(int i=0; i<=k; i++){
+            // insert k elements from starting into pq
+            pq.offer(arr[i]);
         }
-        ArrayList<Integer> list = new ArrayList<>(map.keySet());
-        Collections.sort(list,(a,b)->
-        {
-            if(map.get(b).equals(map.get(a))){
-                return b-a;
-            }
-            else{
-                return map.get(b)-map.get(a);
-            }
-        });
-        ArrayList<Integer> res = new ArrayList<>();
-        for(int i=0;i<k && i<list.size();i++){
-            res.add(list.get(i));
+        
+        int index = 0; // for filling up the arr in sorted order
+        for(int i=k+1; i<arr.length; i++){
+            arr[index++] = pq.poll(); // extract min and store in arr
+            pq.add(arr[i]); // also store the next element in pq for further processing
         }
-        return res;
+        
+        while(!pq.isEmpty()){
+            // store the remaining elements to arr
+            arr[index++] = pq.poll();
+        }
+    
     }
 }
