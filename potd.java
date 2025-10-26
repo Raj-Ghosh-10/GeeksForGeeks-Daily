@@ -1,16 +1,34 @@
-class Solution {
-    public ArrayList<ArrayList<Integer>> kClosest(int[][] points, int k) {
-        int n = points.length;
-        ArrayList<ArrayList<Integer>> ans = new ArrayList<>();
-        Arrays.sort(points, java.util.Comparator.comparingInt(o -> o[0]*o[0] + o[1]*o[1]));
-        int idx = 0;
-        while(k --> 0){
-            ArrayList<Integer> list = new ArrayList<>();
-            list.add(points[idx][0]);
-            list.add(points[idx++][1]);
-            
-            ans.add(list);
-        }
-        return ans;
+class Bank {
+private:
+    vector<long long> bal;
+    int n;
+
+    bool valid(int acc) {
+        return acc > 0 && acc <= n;
     }
-}  
+
+public:
+    Bank(vector<long long>& balance) {
+        bal = balance;
+        n = balance.size();
+    }
+
+    bool transfer(int from, int to, long long amt) {
+        if (!valid(from) || !valid(to) || bal[from - 1] < amt) return false;
+        bal[from - 1] -= amt;
+        bal[to - 1] += amt;
+        return true;
+    }
+
+    bool deposit(int acc, long long amt) {
+        if (!valid(acc)) return false;
+        bal[acc - 1] += amt;
+        return true;
+    }
+
+    bool withdraw(int acc, long long amt) {
+        if (!valid(acc) || bal[acc - 1] < amt) return false;
+        bal[acc - 1] -= amt;
+        return true;
+    }
+};
