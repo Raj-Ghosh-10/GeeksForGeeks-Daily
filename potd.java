@@ -19,7 +19,6 @@ public:
         bal[to - 1] += amt;
         return true;
     }
-
     bool deposit(int acc, long long amt) {
         if (!valid(acc)) return false;
         bal[acc - 1] += amt;
