@@ -1,43 +1,34 @@
 class Solution {
-    public ArrayList<ArrayList<Integer>> nearest(int[][] grid) {
-        int n = grid.length;
-        int m = grid[0].length;
-        int[][] dist = new int[n][m];
-        boolean[][] visited = new boolean[n][m];
-        Queue<int[]> q = new LinkedList<>();
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (grid[i][j] == 1) {
-                    q.add(new int[]{i, j, 0});
-                    visited[i][j] = true;
-                }
-            }
+    public int diameter(int V, int[][] edges) {
+        List<List<Integer>> adj = new ArrayList<>();
+        for (int i = 0; i < V; i++) adj.add(new ArrayList<>());
+        for (int[] e : edges) {
+            adj.get(e[0]).add(e[1]);
+            adj.get(e[1]).add(e[0]);
         }
-        int[] dx = {1, -1, 0, 0};
-        int[] dy = {0, 0, 1, -1};
+        int nodeA = bfs(0, adj, V)[0];
+        int[] result = bfs(nodeA, adj, V);
+        return result[1];
+    }
+    private int[] bfs(int start, List<List<Integer>> adj, int V) {
+        int[] dist = new int[V];
+        Arrays.fill(dist, -1);
+        Queue<Integer> q = new LinkedList<>();
+        q.add(start);
+        dist[start] = 0;
+        int farthestNode = start;
         while (!q.isEmpty()) {
-            int[] curr = q.poll();
-            int i = curr[0];
-            int j = curr[1];
-            int d = curr[2];
-            dist[i][j] = d;
-            for (int k = 0; k < 4; k++) {
-                int ni = i + dx[k];
-                int nj = j + dy[k];
-                if (ni >= 0 && ni < n && nj >= 0 && nj < m && !visited[ni][nj]) {
-                    visited[ni][nj] = true;
-                    q.add(new int[]{ni, nj, d + 1});
+            int node = q.poll();
+            for (int nei : adj.get(node)) {
+                if (dist[nei] == -1) {
+                    dist[nei] = dist[node] + 1;
+                    q.add(nei);
+                    if (dist[nei] > dist[farthestNode]) {
+                        farthestNode = nei;
+                    }
                 }
             }
         }
-        ArrayList<ArrayList<Integer>> ans = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            ArrayList<Integer> row = new ArrayList<>();
-            for (int j = 0; j < m; j++) {
-                row.add(dist[i][j]);
-            }
-            ans.add(row);
-        }
-        return ans;
+        return new int[]{farthestNode, dist[farthestNode]};
     }
 }
