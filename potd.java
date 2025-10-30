@@ -1,34 +1,33 @@
 class Solution {
-    public int diameter(int V, int[][] edges) {
-        List<List<Integer>> adj = new ArrayList<>();
-        for (int i = 0; i < V; i++) adj.add(new ArrayList<>());
-        for (int[] e : edges) {
-            adj.get(e[0]).add(e[1]);
-            adj.get(e[1]).add(e[0]);
+    public void fill(char[][] grid) {
+        int n = grid.length;
+        int m = grid[0].length;
+        Queue<int[]> q = new LinkedList<>();
+        for (int i = 0; i < n; i++) {
+            if (grid[i][0] == 'O') q.offer(new int[]{i, 0});
+            if (grid[i][m - 1] == 'O') q.offer(new int[]{i, m - 1});
         }
-        int nodeA = bfs(0, adj, V)[0];
-        int[] result = bfs(nodeA, adj, V);
-        return result[1];
-    }
-    private int[] bfs(int start, List<List<Integer>> adj, int V) {
-        int[] dist = new int[V];
-        Arrays.fill(dist, -1);
-        Queue<Integer> q = new LinkedList<>();
-        q.add(start);
-        dist[start] = 0;
-        int farthestNode = start;
+        for (int j = 0; j < m; j++) {
+            if (grid[0][j] == 'O') q.offer(new int[]{0, j});
+            if (grid[n - 1][j] == 'O') q.offer(new int[]{n - 1, j});
+        }
+        int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};
         while (!q.isEmpty()) {
-            int node = q.poll();
-            for (int nei : adj.get(node)) {
-                if (dist[nei] == -1) {
-                    dist[nei] = dist[node] + 1;
-                    q.add(nei);
-                    if (dist[nei] > dist[farthestNode]) {
-                        farthestNode = nei;
-                    }
-                }
+            int[] cell = q.poll();
+            int x = cell[0], y = cell[1];
+            if (x < 0 || y < 0 || x >= n || y >= m || grid[x][y] != 'O') continue;
+            grid[x][y] = '#';
+            for (int[] d : dirs) {
+                int nx = x + d[0], ny = y + d[1];
+                if (nx >= 0 && ny >= 0 && nx < n && ny < m && grid[nx][ny] == 'O')
+                    q.offer(new int[]{nx, ny});
             }
         }
-        return new int[]{farthestNode, dist[farthestNode]};
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] == 'O') grid[i][j] = 'X';
+                else if (grid[i][j] == '#') grid[i][j] = 'O';
+            }
+        }
     }
 }
