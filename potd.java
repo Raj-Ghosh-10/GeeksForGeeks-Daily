@@ -1,33 +1,34 @@
 class Solution {
-    public void fill(char[][] grid) {
-        int n = grid.length;
-        int m = grid[0].length;
-        Queue<int[]> q = new LinkedList<>();
-        for (int i = 0; i < n; i++) {
-            if (grid[i][0] == 'O') q.offer(new int[]{i, 0});
-            if (grid[i][m - 1] == 'O') q.offer(new int[]{i, m - 1});
+    public int shortCycle(int V, int[][] edges) {
+        List<List<Integer>> adj = new ArrayList<>();
+        for (int i = 0; i < V; i++) adj.add(new ArrayList<>());
+        for (int[] e : edges) {
+            adj.get(e[0]).add(e[1]);
+            adj.get(e[1]).add(e[0]);
         }
-        for (int j = 0; j < m; j++) {
-            if (grid[0][j] == 'O') q.offer(new int[]{0, j});
-            if (grid[n - 1][j] == 'O') q.offer(new int[]{n - 1, j});
-        }
-        int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};
-        while (!q.isEmpty()) {
-            int[] cell = q.poll();
-            int x = cell[0], y = cell[1];
-            if (x < 0 || y < 0 || x >= n || y >= m || grid[x][y] != 'O') continue;
-            grid[x][y] = '#';
-            for (int[] d : dirs) {
-                int nx = x + d[0], ny = y + d[1];
-                if (nx >= 0 && ny >= 0 && nx < n && ny < m && grid[nx][ny] == 'O')
-                    q.offer(new int[]{nx, ny});
+        int ans = Integer.MAX_VALUE;
+        for (int src = 0; src < V; src++) {
+            int[] dist = new int[V];
+            int[] parent = new int[V];
+            Arrays.fill(dist, -1);
+            Arrays.fill(parent, -1);
+            Queue<Integer> q = new LinkedList<>();
+            q.add(src);
+            dist[src] = 0;
+            while (!q.isEmpty()) {
+                int node = q.poll();
+                
+                for (int nbr : adj.get(node)) {
+                    if (dist[nbr] == -1) {
+                        dist[nbr] = dist[node] + 1;
+                        parent[nbr] = node;
+                        q.add(nbr);
+                    } else if (parent[node] != nbr) {
+                        ans = Math.min(ans, dist[node] + dist[nbr] + 1);
+                    }
+                }
             }
         }
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (grid[i][j] == 'O') grid[i][j] = 'X';
-                else if (grid[i][j] == '#') grid[i][j] = 'O';
-            }
-        }
+        return ans == Integer.MAX_VALUE ? -1 : ans;
     }
 }
