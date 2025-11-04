@@ -1,33 +1,21 @@
 class Solution {
-    public ArrayList<Integer> safeNodes(int V, int[][] edges) {
-        ArrayList<ArrayList<Integer>> revGraph = new ArrayList<>();
-        int[] outdeg = new int[V];
-        for (int i = 0; i < V; i++) 
-            revGraph.add(new ArrayList<>());
-        for (int[] e : edges) {
-            int u = e[0], v = e[1];
-            revGraph.get(v).add(u);
-            outdeg[u]++;
+    int minCost(int[] height) {
+        int n = height.length;
+        if (n == 1){ 
+            return 0;
         }
-        Queue<Integer> q = new LinkedList<>();
-        ArrayList<Integer> safe = new ArrayList<>();
-        for (int i = 0; i < V; i++) {
-            if (outdeg[i] == 0){
-                q.add(i);
-            } 
-        }
-        while (!q.isEmpty()) {
-            int node = q.poll();
-            safe.add(node);
-            
-            for (int parent : revGraph.get(node)) {
-                outdeg[parent]--;
-                if (outdeg[parent] == 0){
-                    q.add(parent);
-                }
+        int prev = 0;
+        int prev2 = 0;
+        for (int i = 1; i < n; i++) {
+            int jump1 = prev + Math.abs(height[i] - height[i - 1]);
+            int jump2 = Integer.MAX_VALUE;
+            if (i > 1) {
+                jump2 = prev2 + Math.abs(height[i] - height[i - 2]);
             }
+            int curr = Math.min(jump1, jump2);
+            prev2 = prev;
+            prev = curr;
         }
-        Collections.sort(safe);
-        return safe;
+        return prev;
     }
 }
