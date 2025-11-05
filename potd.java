@@ -1,21 +1,24 @@
 class Solution {
-    int minCost(int[] height) {
-        int n = height.length;
-        if (n == 1){ 
-            return 0;
+    boolean isPerfect(int x) {
+        int r = (int)Math.sqrt(x);
+        return r * r == x;
+    }
+    public int minSquares(int n) {
+        if (isPerfect(n)) {
+            return 1;
         }
-        int prev = 0;
-        int prev2 = 0;
-        for (int i = 1; i < n; i++) {
-            int jump1 = prev + Math.abs(height[i] - height[i - 1]);
-            int jump2 = Integer.MAX_VALUE;
-            if (i > 1) {
-                jump2 = prev2 + Math.abs(height[i] - height[i - 2]);
+        for (int i = 1; i * i <= n; i++) {
+            if (isPerfect(n - i * i)){
+                return 2;
             }
-            int curr = Math.min(jump1, jump2);
-            prev2 = prev;
-            prev = curr;
         }
-        return prev;
+        int temp = n;
+        while (temp % 4 == 0) {
+            temp /= 4;
+        }
+        if (temp % 8 == 7) {
+            return 4;
+        }
+        return 3;
     }
 }
