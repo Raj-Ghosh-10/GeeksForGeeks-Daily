@@ -1,24 +1,19 @@
 class Solution {
-    boolean isPerfect(int x) {
-        int r = (int)Math.sqrt(x);
-        return r * r == x;
-    }
-    public int minSquares(int n) {
-        if (isPerfect(n)) {
+    public int numberOfWays(int n) {
+        if (n == 1) {
             return 1;
         }
-        for (int i = 1; i * i <= n; i++) {
-            if (isPerfect(n - i * i)){
-                return 2;
-            }
+        if (n == 2) {
+            return 2;
         }
-        int temp = n;
-        while (temp % 4 == 0) {
-            temp /= 4;
+        int prev2 = 1;
+        int prev1 = 2;
+        int curr = 0;
+        for (int i = 3; i <= n; i++) {
+            curr = prev1 + prev2;
+            prev2 = prev1;
+            prev1 = curr;
         }
-        if (temp % 8 == 7) {
-            return 4;
-        }
-        return 3;
+        return prev1;
     }
 }
