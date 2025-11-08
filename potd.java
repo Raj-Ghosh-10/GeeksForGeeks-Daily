@@ -1,30 +1,24 @@
 class Solution {
-    public int maxProfit(int[][] jobs) {
-        Arrays.sort(jobs, (a, b) -> Integer.compare(a[1], b[1]));
-        int n = jobs.length;
-        int[] dp = new int[n];
-        dp[0] = jobs[0][2];
-        int[] endTimes = new int[n];
-        for (int i = 0; i < n; i++) endTimes[i] = jobs[i][1];
-        for (int i = 1; i < n; i++) {
-            int includeProfit = jobs[i][2];
-            int idx = binarySearch(endTimes, jobs[i][0], i - 1);
-            if (idx != -1) includeProfit += dp[idx];
-            dp[i] = Math.max(dp[i - 1], includeProfit);
+    public int numberOfPath(int[][] mat, int k) {
+        int n = mat.length;
+        int m = mat[0].length;
+        int[][][] dp = new int[n][m][k + 1];
+        if (mat[0][0] <= k){
+            dp[0][0][mat[0][0]] = 1;
         }
-        return dp[n - 1];
-    }
-    private int binarySearch(int[] endTimes, int startTime, int high) {
-        int low = 0, ans = -1;
-        while (low <= high) {
-            int mid = low + (high - low) / 2;
-            if (endTimes[mid] <= startTime) {
-                ans = mid;
-                low = mid + 1;
-            } else {
-                high = mid - 1;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                for (int sum = 0; sum <= k; sum++) {
+                    if (i == 0 && j == 0) continue;
+                    if (sum < mat[i][j]) continue;
+                    int remaining = sum - mat[i][j];
+                    int ways = 0;
+                    if (i > 0) ways += dp[i - 1][j][remaining];
+                    if (j > 0) ways += dp[i][j - 1][remaining];
+                    dp[i][j][sum] = ways;
+                }
             }
         }
-        return ans;
+        return dp[n - 1][m - 1][k];
     }
 }
