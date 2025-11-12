@@ -1,18 +1,26 @@
 class Solution {
-    public static int minSuperSeq(String s1, String s2) {
-        int n = s1.length();
-        int m = s2.length();
-        int[][] dp = new int[n + 1][m + 1];
+    public boolean wildCard(String txt, String pat) {
+        int n = pat.length();
+        int m = txt.length();
+        boolean[] prev = new boolean[m + 1];
+        boolean[] curr = new boolean[m + 1];
+        prev[0] = true;
         for (int i = 1; i <= n; i++) {
+            curr[0] = prev[0] && pat.charAt(i - 1) == '*';
             for (int j = 1; j <= m; j++) {
-                if (s1.charAt(i - 1) == s2.charAt(j - 1)){
-                    dp[i][j] = 1 + dp[i - 1][j - 1];
-                }else{
-                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-                }   
+                char p = pat.charAt(i - 1);
+                char t = txt.charAt(j - 1);
+                if (p == t || p == '?') {
+                    curr[j] = prev[j - 1];
+                } else if (p == '*') {
+                    curr[j] = prev[j] || curr[j - 1];
+                } else {
+                    curr[j] = false;
+                }
             }
+            prev = curr.clone();
+            curr = new boolean[m + 1];
         }
-        int lcsLength = dp[n][m];
-        return n + m - lcsLength;
+        return prev[m];
     }
 }
