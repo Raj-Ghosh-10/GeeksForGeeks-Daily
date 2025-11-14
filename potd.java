@@ -1,19 +1,31 @@
 class Solution {
-    public boolean isInterleave(String s1, String s2, String s3) {
-        int n = s1.length(), m = s2.length();
-        if (s3.length() != n + m) return false;
-        boolean[] dp = new boolean[m + 1];
-        dp[0] = true;
-        for (int j = 1; j <= m; j++) {
-            dp[j] = dp[j - 1] && s2.charAt(j - 1) == s3.charAt(j - 1);
+    public static int mergeStones(int[] stones, int k) {
+        int n = stones.length;
+        if ((n - 1) % (k - 1) != 0) return -1;
+        int[] pref = new int[n + 1];
+        for (int i = 0; i < n; i++) pref[i + 1] = pref[i] + stones[i];
+        int[][][] dp = new int[n][n][k + 1];
+        int INF = (int)1e9;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++)
+                for (int t = 1; t <= k; t++)
+                    dp[i][j][t] = INF;
+            dp[i][i][1] = 0;
         }
-        for (int i = 1; i <= n; i++) {
-            dp[0] = dp[0] && s1.charAt(i - 1) == s3.charAt(i - 1);
-            for (int j = 1; j <= m; j++) {
-                dp[j] = (dp[j] && s1.charAt(i - 1) == s3.charAt(i + j - 1)) ||
-                        (dp[j - 1] && s2.charAt(j - 1) == s3.charAt(i + j - 1));
+        for (int len = 2; len <= n; len++) {
+            for (int i = 0; i + len - 1 < n; i++) {
+                int j = i + len - 1;
+                for (int t = 2; t <= k; t++) {
+                    for (int mid = i; mid < j; mid += (k - 1)) {
+                        if (dp[i][mid][1] == INF || dp[mid + 1][j][t - 1] == INF) continue;
+                        dp[i][j][t] = Math.min(dp[i][j][t],
+                                dp[i][mid][1] + dp[mid + 1][j][t - 1]);
+                    }
+                }
+                if (dp[i][j][k] < INF)
+                    dp[i][j][1] = dp[i][j][k] + (pref[j + 1] - pref[i]);
             }
         }
-        return dp[m];
+        return dp[0][n - 1][1];
     }
 }
