@@ -1,31 +1,40 @@
 class Solution {
-    public int minCostPath(int[][] heights) {
-        int rows = heights.length;
-        int columns = heights[0].length;
-        int[][] effort = new int[rows][columns];
-        for (int[] e : effort) Arrays.fill(e, Integer.MAX_VALUE);
-        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[2] - b[2]);
-        pq.offer(new int[]{0, 0, 0});
-        effort[0][0] = 0;
-        int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};
-        while (!pq.isEmpty()) {
-            int[] curr = pq.poll();
-            int r = curr[0], c = curr[1], currEff = curr[2];
-            if (r == rows - 1 && c == columns - 1)
-                return currEff;
-            for (int[] d : dirs) {
-                int nr = r + d[0];
-                int nc = c + d[1];
-                if (nr >= 0 && nr < rows && nc >= 0 && nc < columns) {
-                    int diff = Math.abs(heights[nr][nc] - heights[r][c]);
-                    int newEff = Math.max(currEff, diff);
-                    if (newEff < effort[nr][nc]) {
-                        effort[nr][nc] = newEff;
-                        pq.offer(new int[]{nr, nc, newEff});
-                    }
+    public int minCost(String s, String t, char[][] transform, int[] cost) {
+        final int INF = (int)1e9;
+        int[][] dist = new int[26][26];
+        for (int i = 0; i < 26; i++) {
+            for (int j = 0; j < 26; j++) {
+                dist[i][j] = (i == j ? 0 : INF);
+            }
+        }
+        for (int i = 0; i < transform.length; i++) {
+            int u = transform[i][0] - 'a';
+            int v = transform[i][1] - 'a';
+            dist[u][v] = Math.min(dist[u][v], cost[i]);
+        }
+        for (int k = 0; k < 26; k++) {
+            for (int i = 0; i < 26; i++) {
+                if (dist[i][k] == INF) continue;
+                for (int j = 0; j < 26; j++) {
+                    if (dist[k][j] == INF) continue;
+                    dist[i][j] = Math.min(dist[i][j], dist[i][k] + dist[k][j]);
                 }
             }
         }
-        return -1;
+        long total = 0;
+        for (int i = 0; i < s.length(); i++) {
+            int a = s.charAt(i) - 'a';
+            int b = t.charAt(i) - 'a';
+            if (a == b) continue;
+            int best = INF;
+            for (int c = 0; c < 26; c++) {
+                if (dist[a][c] < INF && dist[b][c] < INF) {
+                    best = Math.min(best, dist[a][c] + dist[b][c]);
+                }
+            }
+            if (best == INF) return -1;
+            total += best;
+        }
+        return (int) total;
     }
 }
