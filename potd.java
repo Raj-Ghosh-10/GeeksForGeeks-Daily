@@ -1,36 +1,28 @@
 class Solution {
-    int[] parent, rank;
-
-    int find(int x) {
-        if (parent[x] != x) parent[x] = find(parent[x]);
-        return parent[x];
+    Map<Integer, Integer> parent = new HashMap<>();
+    
+    private int find(int x) {
+        if (!parent.containsKey(x)) parent.put(x, x);
+        if (parent.get(x) != x) parent.put(x, find(parent.get(x)));
+        return parent.get(x);
     }
-    void unite(int a, int b) {
-        int pa = find(a), pb = find(b);
-        if (pa == pb) return;
-        if (rank[pa] < rank[pb]) parent[pa] = pb;
-        else if (rank[pb] < rank[pa]) parent[pb] = pa;
-        else {
-            parent[pb] = pa;
-            rank[pa]++;
-        }
+    
+    private void union(int x, int y) {
+        int px = find(x);
+        int py = find(y);
+        if (px != py) parent.put(px, py);
     }
-    public int minConnect(int V, int[][] edges) {
-        parent = new int[V];
-        rank = new int[V];
-        for (int i = 0; i < V; i++) parent[i] = i;
-        int redundant = 0;
-        for (int[] e : edges) {
-            int u = e[0], v = e[1];
-            if (find(u) == find(v)) redundant++;
-            else unite(u, v);
+    
+    public int maxRemove(int[][] stones) {
+        for (int[] stone : stones) {
+            union(stone[0], stone[1] + 10001);
         }
-        int components = 0;
-        for (int i = 0; i < V; i++) {
-            if (find(i) == i) components++;
+        
+        Set<Integer> components = new HashSet<>();
+        for (int[] stone : stones) {
+            components.add(find(stone[0]));
         }
-        int need = components - 1;
-        if (redundant >= need) return need;
-        return -1;
+        
+        return stones.length - components.size();
     }
 }
